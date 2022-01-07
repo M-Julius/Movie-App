@@ -43,7 +43,7 @@ export class Api {
       },
       params: {
         api_key: this.config.apiKey,
-      }
+      },
     })
   }
 

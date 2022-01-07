@@ -12,5 +12,5 @@ export const palette = {
   blue: "#0FEFFD",
   blueHex: "rgba(15, 239, 253, 0.1)",
   blackWhiteGradient: ["rgba(29, 29, 29, 0)", "rgba(29, 29, 29, 0.8)"],
-  verifiedBlack: "#242424"
+  verifiedBlack: "#242424",
 }
