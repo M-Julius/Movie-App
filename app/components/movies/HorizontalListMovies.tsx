@@ -69,13 +69,18 @@ const HorizontalListMovies: React.FC<HorizontalListMoviesProps> = ({
         </Pressable>
       </View>
 
-      <FlatList
-        horizontal={listMovies.length > 0}
-        data={listMovies}
-        ListEmptyComponent={() => <EmptyState style={{ alignSelf: 'center' }} button="" content="" />}
-        renderItem={({ item, index }) => <ItemMovie item={item} index={index} type="horizontal" />}
-        keyExtractor={(item) => `${item.id}`}
-      />
+      {
+        listMovies.length > 0 ?
+          <FlatList
+            horizontal={true}
+            data={listMovies}
+            renderItem={({ item, index }) => <ItemMovie item={item} index={index} type="horizontal" />}
+            keyExtractor={(item) => `${item.id}`}
+          />
+          :
+          // horizontal list not support in section scroll view
+          <EmptyState style={{ alignSelf: 'center' }} button="" content="" />
+      }
     </View>
   );
 };
