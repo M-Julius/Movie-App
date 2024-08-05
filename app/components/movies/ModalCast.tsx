@@ -62,7 +62,7 @@ const ModalCast: React.FC<ModalCastProps> = ({ isVisible, onClose, cast }) => {
                 </View>
                 <FlatList
                     data={cast}
-                    keyExtractor={(item) => item.id.toString()}
+                    keyExtractor={(item, index) => index+item.id.toString()}
                     renderItem={({ item }) => (
                         <View style={styles.castItem}>
                             <Text style={styles.castName}>{item.name}</Text>

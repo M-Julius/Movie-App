@@ -1,13 +1,14 @@
-import { detach, Instance, SnapshotOut, types } from "mobx-state-tree"
-import { Movies, MoviesModel } from "../Movies"
-import { Api } from "app/services/api/api";
+import { detach, Instance, SnapshotOut, types } from "mobx-state-tree";
+import { Movies, MoviesModel } from "../Movies";
 import { withSetPropAction } from "../helpers/withSetPropAction";
 import { GenreModel } from "../Genre";
+import { MovieApi } from "app/services/api/movieApi";
+import { GetMoviesResult } from "app/services/api";
 
 /**
  * Example store containing Rick and Morty movies
  */
-export type MovieType = 'popular' | 'topRated' | 'nowPlaying' | 'similar' | 'searched' | 'favorite'
+export type MovieType = 'popular' | 'topRated' | 'nowPlaying' | 'similar' | 'searched' | 'favorite';
 
 export const MovieStoreModel = types
   .model("MovieStore")
@@ -27,139 +28,112 @@ export const MovieStoreModel = types
     }
   }))
   .actions((self) => {
-    return {
-      saveMovies: (type: MovieType, movieSnapshots: Movies[]) => {
-        const movies = movieSnapshots.map(movie => {
-          const genres = self.parseGenres(movie?.genre_ids ?? []) ?? []
-          return ({
+    const saveMovies = (type: MovieType, movieSnapshots: Movies[]) => {
+      const movies = movieSnapshots.map(movie => {
+        const genres = self.parseGenres(movie?.genre_ids ?? []);
+        return {
+          ...movie,
+          genres,
+        };
+      });
+
+      detach(self[type]);
+      self.setProp(type, movies);
+    };
+
+    const appendMovies = (movieSnapshots: Movies[], type: MovieType) => {
+      const newMovies = movieSnapshots
+        .filter(movie => !self[type].find(m => m.id === movie.id))
+        .map(movie => {
+          const genres = self.parseGenres(movie?.genre_ids ?? []);
+          return {
             ...movie,
             genres,
-          })
+          };
         });
 
-        detach(self[type]);
-        self.setProp(type, movies);
-      },
-      appendMovies: (movieSnapshots: Movies[], type: MovieType) => {
-        // check duplicate
-        const newMovies = movieSnapshots.filter((movie) => {
-          return !self[type].find((m) => m.id === movie.id)
-        }).map(movie => {
-          const genres = self.parseGenres(movie?.genre_ids ?? []) ?? []
-          return ({
-            ...movie,
-            genres,
-          })
-        }
-        );
-        self[type].push(...newMovies)
-      },
-      clearMovies: (type: MovieType) => {
-        self.setProp(type, [])
-      },
+      self[type].push(...newMovies);
+    };
+
+    const clearMovies = (type: MovieType) => {
+      self.setProp(type, []);
+    };
+
+    return {
+      saveMovies,
+      appendMovies,
+      clearMovies,
     }
-  }).actions((self) => {
-    let movieApi = new Api();
+  })
+  .actions((self) => {
+    const movieApi = new MovieApi();
+
+    // for movies list
+    const handleApiResult = async <T extends GetMoviesResult>(apiCall: () => Promise<T>, type: MovieType, page: number) => {
+      try {
+        const result = await apiCall();
+        if (result.kind === "ok") {
+          if (page === 1) {
+            self.saveMovies(type, JSON.parse(JSON.stringify(result.data.results)));
+          } else {
+            self.appendMovies(result.data.results, type);
+          }
+          return result.data.results;
+        } else {
+          __DEV__ && console.tron.log(result.kind);
+          return [];
+        }
+      } catch (error) {
+        console.log(type, error);
+        return [];
+      }
+    };
 
     return {
       getMoviesPopular: async (page: number = 1) => {
-        const result = await movieApi.getMoviesPopular(page)
-        if (result.kind === "ok") {
-          if (page === 1) {
-            self.saveMovies('popular', result.data.results)
-          } else {
-            self.appendMovies(result.data.results, 'popular')
-          }
-          return result.data.results;
-        } else {
-          __DEV__ && console.tron.log(result.kind)
-          return [];
-        }
+        return handleApiResult(() => movieApi.getMoviesPopular(page), 'popular', page);
       },
       getTopRated: async (page: number = 1) => {
-        const result = await movieApi.getMoviesTopRated(page)
-        if (result.kind === "ok") {
-          if (page === 1) {
-            self.saveMovies('topRated', result.data.results)
-          } else {
-            self.appendMovies(result.data.results, 'topRated')
-          }
-          return result.data.results;
-        } else {
-          __DEV__ && console.tron.log(result.kind)
-          return [];
-        }
+        return handleApiResult(() => movieApi.getMoviesTopRated(page), 'topRated', page);
       },
       getNowPlayingMovies: async () => {
-        const result = await movieApi.getNowPlayingMovies()
-        if (result.kind === "ok") {
-          self.saveMovies('nowPlaying', result.data.results)
-          return result.data.results
-        } else {
-          __DEV__ && console.tron.log(result.kind)
-          return [];
-        }
+        return handleApiResult(() => movieApi.getNowPlayingMovies(), 'nowPlaying', 1);
       },
       getSimilarMovies: async (id: number, page: number = 1) => {
-        const result = await movieApi.getMoviesSimilar(id, page)
-        if (result.kind === "ok") {
-          if (page === 1) {
-            self.saveMovies('similar', result.data.results)
-          } else {
-            self.appendMovies(result.data.results, 'similar')
-          }
-          return result.data.results;
-        } else {
-          __DEV__ && console.log(result)
-          return [];
-        }
+        return handleApiResult(() => movieApi.getMoviesSimilar(id, page), 'similar', page);
       },
       getSearchMovies: async (query: string = '', page: number = 1) => {
-        const result = await movieApi.searchMovies(query, page)
-        if (result.kind === "ok") {
-          if (page === 1) {
-            self.saveMovies('searched', result.data.results)
-          } else {
-            self.appendMovies(result.data.results, 'searched')
-          }
-
-          return result.data.results;
-        } else {
-          __DEV__ && console.log(result)
-          return [];
-        }
+        return handleApiResult(() => movieApi.searchMovies(query, page), 'searched', page);
       },
       getGenres: async () => {
-        const result = await movieApi.getGenres()
+        const result = await movieApi.getGenres();
         if (result.kind === "ok") {
-          self.setProp("genres", result.genres)
+          self.setProp("genres", result.genres);
         } else {
-          __DEV__ && console.log(result)
+          __DEV__ && console.log(result);
         }
-      }
-    }
+      },
+    };
   }).actions((self) => {
-    let movieApi = new Api();
+    const movieApi = new MovieApi();
 
     return {
       getDetailMovies: async (id: number) => {
-        const resultMovie = await movieApi.getDetailMovie(id)
-        const resultCast = await movieApi.getCastMovie(id)
-        const resultSimilar = await self.getSimilarMovies(id)
+        const resultMovie = await movieApi.getDetailMovie(id);
+        const resultCast = await movieApi.getCastMovie(id);
+        const resultSimilar = await self.getSimilarMovies(id);
 
-        return { movie: resultMovie, cast: resultCast, similar: resultSimilar }
+        return { movie: resultMovie, cast: resultCast, similar: resultSimilar };
       },
       getMoviesInMainPage: async () => {
         await self.getGenres().then(async () => {
-          await self.getMoviesPopular()
-          await self.getTopRated()
-          await self.getNowPlayingMovies()
+          await self.getNowPlayingMovies();
+          await self.getMoviesPopular();
+          await self.getTopRated();
         });
-
       }
     }
   });
-
 
 export interface MovieStore extends Instance<typeof MovieStoreModel> { }
 export interface MovieStoreSnapshot extends SnapshotOut<typeof MovieStoreModel> { }
