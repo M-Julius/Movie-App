@@ -2,7 +2,6 @@ import React from "react";
 import { StyleSheet, View } from "react-native";
 import { Text } from "..";
 import { colors } from "../../theme";
-import { observer } from "mobx-react-lite";
 
 const styles = StyleSheet.create({
   badge: {
@@ -10,12 +9,13 @@ const styles = StyleSheet.create({
     borderBottomLeftRadius: 15,
     borderTopRightRadius: 15,
     maxWidth: 100,
+    width:'auto',
     paddingVertical: 5,
     paddingHorizontal: 10,
+    alignItems:'center'
   },
   textBadge: {
     color: colors.palette.blue,
-    textAlign: "center",
   },
 });
 
@@ -23,10 +23,10 @@ interface BadgeGenresProps {
   genre: string;
 }
 
-const BadgeGenres: React.FC<BadgeGenresProps> = observer(({ genre }) => (
+const BadgeGenres: React.FC<BadgeGenresProps> = ({ genre }) => (
   <View style={styles.badge}>
     <Text style={styles.textBadge}>{genre}</Text>
   </View>
-));
+);
 
 export default BadgeGenres;
