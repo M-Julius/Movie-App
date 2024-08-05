@@ -1,21 +1,19 @@
 import { Instance, SnapshotOut, types } from "mobx-state-tree"
-import { CharacterStoreModel } from "../character-store/character-store"
-import { MovieStoreModel } from "../movie-store/movie-store"
+import { MovieStoreModel } from "./MovieStore"
+import { FavoriteStoreModel } from "./FavoriteStore"
 
 /**
  * A RootStore model.
  */
-// prettier-ignore
 export const RootStoreModel = types.model("RootStore").props({
-  characterStore: types.optional(CharacterStoreModel, {} as any),
-  movieStore: types.optional(MovieStoreModel, {} as any),
+  movieStore: types.optional(MovieStoreModel, {}),
+  favoriteStore: types.optional(FavoriteStoreModel, {}),
 })
 
 /**
  * The RootStore instance.
  */
 export interface RootStore extends Instance<typeof RootStoreModel> {}
-
 /**
  * The data of a RootStore.
  */
