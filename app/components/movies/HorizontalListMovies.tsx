@@ -57,7 +57,7 @@ const HorizontalListMovies: React.FC<HorizontalListMoviesProps> = ({
         <Text text={title} preset="header" style={styles.titleText} />
         <Pressable
           onPress={() =>
-            navigation.navigate("ListMoreMovies", {
+            navigation.push("ListMoreMovies", {
               type: typeMovies,
               movieId: movieId ?? undefined,
             })
