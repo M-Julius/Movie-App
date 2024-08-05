@@ -70,7 +70,7 @@ const ItemMovie: React.FC<ItemMovieProps> = ({ item, index = 0, type = 'horizont
     const navigation = useNavigation<CompositeNavigationProp<any, any>>();
 
     const genre = useMemo(() => {
-        return item?.genre ?? (item.genres.length ? item.genres[0].name : '-');
+        return item?.genre ?? (item?.genres?.length ? item.genres[0].name : '-');
     }, [item.genre, item.genres]);
 
     const handlePress = () => {

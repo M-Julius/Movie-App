@@ -8,6 +8,7 @@ import { Text } from "app/components";
 
 const styles = StyleSheet.create({
     overview: {
+        width: "100%",
         alignSelf: "center",
         backgroundColor: colors.palette.verifiedBlack,
         marginTop: 15,
@@ -20,6 +21,7 @@ const styles = StyleSheet.create({
         marginTop: 20,
     },
     synopsisContainer: {
+        width: "100%",
         marginTop: 15,
         paddingHorizontal: 20,
     },
