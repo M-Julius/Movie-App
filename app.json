@@ -16,6 +16,11 @@
     "updates": {
       "fallbackToCacheTimeout": 0
     },
+    "extra": {
+      "eas": {
+        "projectId": "3c4d5459-5ff9-43f9-8899-e44834a208aa"
+      }
+    },
     "jsEngine": "hermes",
     "assetBundlePatterns": [
       "**/*"
