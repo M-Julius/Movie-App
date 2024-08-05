@@ -123,7 +123,15 @@ export const MovieStoreModel = types
         const resultCast = await movieApi.getCastMovie(id);
         const resultSimilar = await self.getSimilarMovies(id);
 
-        return { movie: resultMovie, cast: resultCast, similar: resultSimilar };
+        const similar = resultSimilar.map(movie => {
+          const genres = self.parseGenres(movie?.genre_ids ?? []);
+          return {
+            ...movie,
+            genres,
+          };
+        });
+
+        return { movie: resultMovie, cast: resultCast, similar };
       },
       getMoviesInMainPage: async () => {
         await self.getGenres().then(async () => {

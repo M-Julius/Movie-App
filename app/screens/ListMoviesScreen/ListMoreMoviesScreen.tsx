@@ -1,4 +1,4 @@
-import React, { useMemo, useState, useCallback } from "react";
+import React, { useMemo, useState, useCallback, useEffect } from "react";
 import { StyleSheet } from "react-native";
 import { Screen } from "../../components";
 import { CompositeNavigationProp, RouteProp } from "@react-navigation/native";
@@ -32,6 +32,14 @@ const ListMoreMoviesScreen: React.FC<ListMoreMoviesScreenProps> = observer(({ ro
   const [isLoading, setLoading] = useState(false);
   const [isLoadMore, setLoadMore] = useState(true);
 
+  // get movies when type is similar
+  useEffect(() => {
+    if(route.params.type === 'similar') {
+      console.log('get similar movies');
+      movieStore.getSimilarMovies(route.params?.movieId ?? 0);
+    }
+  }, [route.params.type]);
+
   const title = useMemo(() => {
     switch (route.params.type) {
       case 'topRated':
@@ -56,7 +64,7 @@ const ListMoreMoviesScreen: React.FC<ListMoreMoviesScreenProps> = observer(({ ro
       default:
         return movieStore.popular;
     }
-  }, [route.params.type, movieStore, favoriteStore]);
+  }, [route.params.type, getSnapshot(movieStore), getSnapshot(favoriteStore)]);
 
   const onRefresh = useCallback(async () => {
     switch (route.params.type) {

@@ -15,6 +15,7 @@ import useFadeAnimation from "app/hooks/useFadeAnimation";
 import ShimmerDetailMovies from "../MoviesScreen/components/Shimmer/ShimmerDetailMovies";
 import HeaderInfo from "./components/HeaderInfo";
 import Synopsis from "./components/Synopsis";
+import { Movies } from "app/models/Movies";
 
 const styles = StyleSheet.create({
   root: {
@@ -42,6 +43,7 @@ const DetailMoviesScreen: React.FC<DetailMovieProps> = observer(({ route }) => {
 
   const [movies, setMovies] = useState<DetailMovies>();
   const [credits, setCredits] = useState<Cast[]>([]);
+  const [similar, setSimilar] = useState<Movies[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
   const loadingStyle = useFadeAnimation(isLoading);
@@ -50,10 +52,11 @@ const DetailMoviesScreen: React.FC<DetailMovieProps> = observer(({ route }) => {
   useEffect(() => {
     const fetchData = async () => {
       const result = await movieStore.getDetailMovies(movie?.id ?? 0);
-      
+
       if (result.movie.kind === 'ok' && result.cast.kind === 'ok') {
         setMovies(result.movie.movie);
         setCredits(result.cast.cast);
+        setSimilar(result.similar);
         setIsLoading(false);
       } else {
         Alert.alert('Failed, ', result.movie.kind)
@@ -72,7 +75,7 @@ const DetailMoviesScreen: React.FC<DetailMovieProps> = observer(({ route }) => {
         <Synopsis movie={movies as DetailMovies} credits={credits} />
         <View style={styles.divider} />
         <HorizontalListMovies
-          data={movieStore.similar}
+          data={similar ?? []}
           movieId={movie?.id}
           typeMovies="similar"
           title="You Might Also Like This"
