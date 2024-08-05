@@ -1,40 +1,37 @@
-import { ApisauceInstance, create, ApiResponse } from "apisauce"
-import { getGeneralApiProblem } from "./api-problem"
-import { ApiConfig, DEFAULT_API_CONFIG } from "./api-config"
-import * as Types from "./api.types"
+/**
+ * This Api class lets you define an API endpoint and methods to request
+ * data and process it.
+ *
+ * See the [Backend API Integration](https://docs.infinite.red/ignite-cli/boilerplate/app/services/#backend-api-integration)
+ * documentation for more details.
+ */
+import { ApiResponse, ApisauceInstance, create } from "apisauce"
+import Config from "../../config"
+import { getGeneralApiProblem } from "./apiProblem"
+import type { ApiConfig, GetCreditsResult, GetMovieResult, GetMoviesResult, GetResultGenres } from "./api.types"
 
 /**
- * Manages all requests to the API.
+ * Configuring the apisauce instance.
+ */
+export const DEFAULT_API_CONFIG: ApiConfig = {
+  url: Config.API_URL,
+  timeout: 10000,
+  apiKey: Config.API_KEY,
+}
+
+/**
+ * Manages all requests to the API. You can use this class to build out
+ * various requests that you need to call from your backend API.
  */
 export class Api {
-  /**
-   * The underlying apisauce instance which performs the requests.
-   */
   apisauce: ApisauceInstance
-
-  /**
-   * Configurable options.
-   */
   config: ApiConfig
 
   /**
-   * Creates the api.
-   *
-   * @param config The configuration to use.
+   * Set up our API instance. Keep this lightweight!
    */
   constructor(config: ApiConfig = DEFAULT_API_CONFIG) {
     this.config = config
-  }
-
-  /**
-   * Sets up the API.  This will be called during the bootup
-   * sequence and will happen before the first React component
-   * is mounted.
-   *
-   * Be as quick as possible in here.
-   */
-  setup() {
-    // construct the apisauce instance
     this.apisauce = create({
       baseURL: this.config.url,
       timeout: this.config.timeout,
@@ -43,63 +40,157 @@ export class Api {
       },
       params: {
         api_key: this.config.apiKey,
-      },
+      }
     })
   }
 
   /**
-   * Gets a list of users.
+   * Gets a list of recent React Native Radio episodes.
    */
-  async getUsers(): Promise<Types.GetUsersResult> {
-    // make the api call
-    const response: ApiResponse<any> = await this.apisauce.get(`/users`)
-
-    // the typical ways to die when calling an api
-    if (!response.ok) {
-      const problem = getGeneralApiProblem(response)
-      if (problem) return problem
-    }
-
-    const convertUser = (raw) => {
-      return {
-        id: raw.id,
-        name: raw.name,
-      }
-    }
-
-    // transform the data into the format we are expecting
+  async getMoviesPopular(page: number = 1): Promise<GetMoviesResult> {
     try {
-      const rawUsers = response.data
-      const resultUsers: Types.User[] = rawUsers.map(convertUser)
-      return { kind: "ok", users: resultUsers }
-    } catch {
+      // make the api call
+      const response: ApiResponse<any> = await this.apisauce.get(`/movie/popular?page=${page}`)
+
+      // the typical ways to die when calling an api
+      if (!response.ok) {
+        const problem = getGeneralApiProblem(response)
+        if (problem) return problem
+      }
+      const data = response.data;
+
+      return { kind: "ok", data }
+    } catch (e) {
       return { kind: "bad-data" }
     }
   }
 
-  /**
-   * Gets a single user by ID
-   */
-
-  async getUser(id: string): Promise<Types.GetUserResult> {
-    // make the api call
-    const response: ApiResponse<any> = await this.apisauce.get(`/users/${id}`)
-
-    // the typical ways to die when calling an api
-    if (!response.ok) {
-      const problem = getGeneralApiProblem(response)
-      if (problem) return problem
-    }
-
-    // transform the data into the format we are expecting
+  async getMoviesTopRated(page: number = 1): Promise<GetMoviesResult> {
     try {
-      const resultUser: Types.User = {
-        id: response.data.id,
-        name: response.data.name,
+      // make the api call
+      const response: ApiResponse<any> = await this.apisauce.get(`/movie/top_rated?page=${page}`)
+
+      // the typical ways to die when calling an api
+      if (!response.ok) {
+        const problem = getGeneralApiProblem(response)
+        if (problem) return problem
       }
-      return { kind: "ok", user: resultUser }
-    } catch {
+      const data = response.data;
+
+      return { kind: "ok", data }
+    } catch (e) {
+      return { kind: "bad-data" }
+    }
+  }
+
+  async getNowPlayingMovies(): Promise<GetMoviesResult> {
+    try {
+      // make the api call
+      const response: ApiResponse<any> = await this.apisauce.get("/movie/now_playing")
+
+      // the typical ways to die when calling an api
+      if (!response.ok) {
+        const problem = getGeneralApiProblem(response)
+        if (problem) return problem
+      }
+
+      const data = response.data;
+      return { kind: "ok", data }
+    } catch (e) {
+      return { kind: "bad-data" }
+    }
+  }
+
+  async searchMovies(query: string, page: number = 1): Promise<GetMoviesResult> {
+    try {
+      // make the api call
+      const response: ApiResponse<any> = await this.apisauce.get(`/search/movie?query=${query}&page=${page}`)
+
+      // the typical ways to die when calling an api
+      if (!response.ok) {
+        const problem = getGeneralApiProblem(response)
+        if (problem) return problem
+      }
+
+      const data = response.data
+      return { kind: "ok", data }
+    } catch (e) {
+      return { kind: "bad-data" }
+    }
+  }
+
+  async getDetailMovie(id: number): Promise<GetMovieResult> {
+    try {
+      // make the api call
+      const response: ApiResponse<any> = await this.apisauce.get(`/movie/${id}`)
+
+      // the typical ways to die when calling an api
+      if (!response.ok) {
+        const problem = getGeneralApiProblem(response)
+        if (problem) return problem
+      }
+
+      const movie = response.data
+      return { kind: "ok", movie }
+    } catch (e) {
+      return { kind: "bad-data" }
+    }
+  }
+
+  async getCastMovie(id: number): Promise<GetCreditsResult> {
+    try {
+      // make the api call
+      const response: ApiResponse<any> = await this.apisauce.get(`/movie/${id}/credits`)
+
+      // the typical ways to die when calling an api
+      if (!response.ok) {
+        const problem = getGeneralApiProblem(response)
+        if (problem) return problem
+      }
+
+      const cast = response.data?.cast
+      return { kind: "ok", cast }
+    } catch (e) {
+      return { kind: "bad-data" }
+    }
+  }
+
+  async getMoviesSimilar(id: number, page: number = 1): Promise<GetMoviesResult> {
+    try {
+      // make the api call
+      const response: ApiResponse<any> = await this.apisauce.get(`/movie/${id}/similar?page=${page}`)
+
+      // the typical ways to die when calling an api
+      if (!response.ok) {
+        const problem = getGeneralApiProblem(response)
+        if (problem) return problem
+      }
+
+      const data = response.data
+      return { kind: "ok", data }
+    } catch (e) {
+      return { kind: "bad-data" }
+    }
+  }
+
+  async getGenres(): Promise<GetResultGenres> {
+    try {
+      // make the api call
+      const response: ApiResponse<any> = await this.apisauce.get(`/genre/movie/list`)
+
+      // the typical ways to die when calling an api
+      if (!response.ok) {
+        const problem = getGeneralApiProblem(response)
+        if (problem) return problem
+      }
+
+      const data = response.data
+      return { kind: "ok", genres: data.genres }
+    } catch (e) {
       return { kind: "bad-data" }
     }
   }
 }
+
+// Singleton instance of the API for convenience
+export const api = new Api()
