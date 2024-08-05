@@ -4,28 +4,75 @@
   "expo": {
     "name": "MovieApp",
     "slug": "MovieApp",
-    "version": "1.0.0",
+    "scheme": "movieapp",
+    "version": "2.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/logo.png",
+    "icon": "./assets/images/logo-1x1.png",
     "splash": {
-      "image": "./assets/images/splash.png",
+      "image": "./assets/images/splash-logo-app.png",
       "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "backgroundColor": "#242424"
     },
     "updates": {
       "fallbackToCacheTimeout": 0
     },
+    "jsEngine": "hermes",
     "assetBundlePatterns": [
       "**/*"
     ],
+    "android": {
+      "icon": "./assets/images/logo-1x1.png",
+      "package": "com.movieapp",
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/images/logo-1x1.png",
+        "backgroundImage": "./assets/images/app-icon-android-adaptive-background.png"
+      },
+      "splash": {
+        "image": "./assets/images/splash-logo-app.png",
+        "resizeMode": "contain",
+        "backgroundColor": "#242424"
+      }
+    },
     "ios": {
-      "supportsTablet": true
+      "icon": "./assets/images/logo-1x1.png",
+      "supportsTablet": true,
+      "bundleIdentifier": "com.movieapp",
+      "splash": {
+        "image": "./assets/images/splash-logo-app.png",
+        "tabletImage": "./assets/images/logo-1x1.png",
+        "resizeMode": "contain",
+        "backgroundColor": "#242424"
+      }
     },
     "web": {
-      "favicon": "./assets/images/logo.png"
+      "favicon": "./assets/images/logo-1x1.png",
+      "splash": {
+        "image": "./assets/images/logo-1x1.png",
+        "resizeMode": "contain",
+        "backgroundColor": "#242424"
+      },
+      "bundler": "metro"
     },
-    "android": {
-      "package": "com.jul.dev.MovieApp"
+    "plugins": [
+      "expo-localization",
+      [
+        "expo-build-properties",
+        {
+          "ios": {
+            "newArchEnabled": false
+          },
+          "android": {
+            "newArchEnabled": false
+          }
+        }
+      ],
+      "expo-font"
+    ],
+    "experiments": {
+      "tsconfigPaths": true
     }
+  },
+  "ignite": {
+    "version": "9.7.2"
   }
 }

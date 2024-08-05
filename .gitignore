@@ -20,6 +20,10 @@ DerivedData
 *.hmap
 *.ipa
 *.xcuserstate
+ios/.xcode.env.local
+.git.bak/
+config.dev.ts
+config.prod.ts
 
 # Android/IntelliJ
 #
@@ -29,6 +33,7 @@ build/
 local.properties
 *.iml
 *.hprof
+.cxx/
 
 # node.js
 #
@@ -49,15 +54,13 @@ buck-out/
 # For more information about the recommended setup visit:
 # https://docs.fastlane.tools/best-practices/source-control/
 
-*/fastlane/report.xml
-*/fastlane/Preview.html
-*/fastlane/screenshots
+**/fastlane/report.xml
+**/fastlane/Preview.html
+**/fastlane/screenshots
+**/fastlane/test_output
 
 # Bundle artifact
 *.jsbundle
-
-# CocoaPods
-/ios/Pods/
 
 # Ignite-specific items below
 # You can safely replace everything above this comment with whatever is
@@ -69,7 +72,10 @@ buck-out/
 # Expo
 .expo/*
 bin/Exponent.app
+/android
+/ios
 
+## Secrets
 npm-debug.*
 *.jks
 *.p8
@@ -80,5 +86,6 @@ npm-debug.*
 web-build/
 
 # Configurations
-app/config/env.*.ts
-!env.ts
+!env.js
+
+/coverage
