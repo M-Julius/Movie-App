@@ -57,7 +57,7 @@ const HeaderMovies: React.FC = () => {
         />
       </Pressable>
       <Pressable
-        onPress={() => navigation.navigate("ListMoreMovies", { type: "favorite" })}
+        onPress={() => navigation.push("ListMoreMovies", { type: "favorite" })}
         style={styles.favoriteButton}
       >
         <MaterialIcons size={24} name="favorite" color={colors.text} />
