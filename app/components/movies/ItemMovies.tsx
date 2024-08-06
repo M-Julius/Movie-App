@@ -71,7 +71,7 @@ const ItemMovie: React.FC<ItemMovieProps> = ({ item, index = 0, type = 'horizont
 
     const genre = useMemo(() => {
         return item?.genre ?? (item?.genres?.length ? item.genres[0].name : '-');
-    }, [item.genre, item.genres]);
+    }, [item?.genre, item?.genres]);
 
     const handlePress = () => {
         navigation.push("DetailMovies", { movie: item });
@@ -80,9 +80,9 @@ const ItemMovie: React.FC<ItemMovieProps> = ({ item, index = 0, type = 'horizont
     const renderHorizontalItem = () => (
         <Pressable onPress={handlePress}>
             <ImageBackground
-                source={{ uri: `${Config.URI_STORAGE}${item.poster_path}` }}
+                source={{ uri: `${Config.URI_STORAGE}${item?.poster_path}` }}
                 style={[styles.imgBg, { marginLeft: index ? 0 : 15 }]}
-                key={item.id}
+                key={item?.id}
             >
                 <LinearGradient
                     colors={colors.palette.blackWhiteGradient}
@@ -101,9 +101,9 @@ const ItemMovie: React.FC<ItemMovieProps> = ({ item, index = 0, type = 'horizont
         <Pressable style={styles.movieItem} onPress={handlePress}>
             <View style={styles.movieImageContainer}>
                 <ImageBackground
-                    source={{ uri: `${Config.URI_STORAGE}${item.poster_path}` }}
+                    source={{ uri: `${Config.URI_STORAGE}${item?.poster_path}` }}
                     style={styles.movieImage}
-                    key={item.id}
+                    key={item?.id}
                 >
                     <LinearGradient
                         colors={colors.palette.blackWhiteGradient}
@@ -120,7 +120,7 @@ const ItemMovie: React.FC<ItemMovieProps> = ({ item, index = 0, type = 'horizont
                     </View>
                     <BadgeGenres genre={genre} />
                 </View>
-                <Text>Release: {item.release_date}</Text>
+                <Text>Release: {item?.release_date}</Text>
             </View>
         </Pressable>
     );

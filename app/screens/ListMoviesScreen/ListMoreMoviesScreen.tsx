@@ -34,8 +34,7 @@ const ListMoreMoviesScreen: React.FC<ListMoreMoviesScreenProps> = observer(({ ro
 
   // get movies when type is similar
   useEffect(() => {
-    if(route.params.type === 'similar') {
-      console.log('get similar movies');
+    if (route.params.type === 'similar') {
       movieStore.getSimilarMovies(route.params?.movieId ?? 0);
     }
   }, [route.params.type]);
@@ -119,9 +118,9 @@ const ListMoreMoviesScreen: React.FC<ListMoreMoviesScreenProps> = observer(({ ro
       <ListMovies
         data={getSnapshot(data) as Movies[]}
         isLoading={isLoading}
-        onEndReached={getMoreMovies} 
+        onEndReached={getMoreMovies}
         onRefresh={onRefresh}
-        />
+      />
     </Screen>
   );
 });

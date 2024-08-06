@@ -42,7 +42,7 @@ export type AppStackParamList = {
   DetailMovies: {
     movie: DetailMovies
   }
-  ListMoreMovies: {movieId?: number,type: MovieType},
+  ListMoreMovies: { movieId?: number, type: MovieType },
   SearchMoviesScreen: undefined
 }
 
