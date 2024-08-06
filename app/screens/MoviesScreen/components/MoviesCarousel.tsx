@@ -99,7 +99,7 @@ const MoviesCarouselRenderer: React.FC = () => {
   const { width } = useWindowDimensions();
   const [swiper, setSwiper] = useState(0);
 
-  const dataMovies = useMemo(() => movieStore.nowPlaying.slice(0, 5), [movieStore.nowPlaying]);
+  const dataMovies = useMemo(() => movieStore?.nowPlaying?.slice(0, 5) ?? [], [movieStore.nowPlaying]);
 
   const renderItem = useCallback(
     ({ item }: { item: Movies }) => (

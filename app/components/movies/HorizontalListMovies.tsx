@@ -49,7 +49,7 @@ const HorizontalListMovies: React.FC<HorizontalListMoviesProps> = ({
   movieId,
 }) => {
   const navigation = useNavigation<CompositeNavigationProp<any, any>>();
-  const listMovies = useMemo(() => data.slice(0, 10), [data]);
+  const listMovies = useMemo(() => data?.slice(0, 10) ?? [], [data]);
 
   return (
     <View style={[styles.listContainer, containerStyle]}>

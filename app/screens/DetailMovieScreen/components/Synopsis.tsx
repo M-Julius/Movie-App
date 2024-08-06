@@ -45,8 +45,8 @@ const Synopsis: React.FC<{ movie: DetailMovies; credits: Cast[] }> = ({ movie, c
             <Text preset="secondary" style={styles.txtCast}>
                 Cast:{" "}
                 <Text style={styles.castTextBold}>
-                    {credits.slice(0, 5).map((item) => item.name).join(", ")}
-                    {credits.length > 5 && (
+                    {credits?.slice(0, 5).map((item) => item.name)?.join(", ") ?? '-'}
+                    {credits?.length > 5 && (
                         <>
                             , <Text style={{ color: colors.palette.yellow }}></Text>
                             <Text onPress={() => setModalVisible(true)} style={{ color: colors.palette.yellow }}> more...</Text>

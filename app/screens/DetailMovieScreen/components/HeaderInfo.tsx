@@ -91,7 +91,7 @@ const HeaderInfo: React.FC<{ movie: DetailMovies }> = observer(({ movie }) => {
                         <Ratings rating={(movie?.vote_average ?? 0) / 2} size={18} style={styles.ratingSize} />
                         <View style={styles.ratingDot} />
                         <Text
-                            text={`Release Year: ${movie?.release_date?.slice(0, 4)}`}
+                            text={`Release Year: ${movie?.release_date?.slice(0, 4) ?? "-"}`}
                             style={styles.releaseYearText}
                         />
                     </View>
