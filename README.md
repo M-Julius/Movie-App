@@ -60,3 +60,4 @@ npx expo start
 - [x] List More Movies
 - [x] Favorite Movies
 - [x] Genres Movies
+- [x] Cast Movie

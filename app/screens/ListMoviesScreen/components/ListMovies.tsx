@@ -18,24 +18,31 @@ type ListMoviesProps = {
     isLoading: boolean;
     onEndReached?: () => void;
     onRefresh?: () => void;
+    onMomentumScrollEnd?: () => void;
 };
 
-const ListMovies: React.FC<ListMoviesProps> = observer(({ data, isLoading, onEndReached, onRefresh }) => {
-    return (
+const ListMovies: React.FC<ListMoviesProps> = observer(({ data, isLoading, onEndReached, onRefresh, onMomentumScrollEnd }) => {
+    return data.length ? (
         <FlatList
             refreshing={false}
             onRefresh={onRefresh}
             ListFooterComponent={() => isLoading &&
                 <ActivityIndicator size="large" color={colors.text} style={styles.listFooter} />}
-            contentContainerStyle={{ paddingHorizontal: 20, paddingBottom: 140 }}
+            contentContainerStyle={{ flexGrow: 1, paddingHorizontal: 20, paddingBottom: 210 }}
             data={data}
-            ListEmptyComponent={() => !isLoading && <EmptyState button="" content="" />}
-            keyExtractor={(item) => item.id.toString()}
+            extraData={[data, data]}
+            keyExtractor={(item, index) => item?.id?.toString() ?? index.toString()}
             renderItem={({ item }) => <ItemMovie item={item} type="vertical" />}
             onEndReached={onEndReached}
             onEndReachedThreshold={0.5}
+            onMomentumScrollEnd={onMomentumScrollEnd}
+            initialNumToRender={20}
+            maxToRenderPerBatch={20}
         />
-    );
+    ) : isLoading ?
+        <ActivityIndicator size="large" color={colors.text} style={styles.listFooter} />
+        :
+        <EmptyState button="" content="" />;
 });
 
 export default ListMovies;

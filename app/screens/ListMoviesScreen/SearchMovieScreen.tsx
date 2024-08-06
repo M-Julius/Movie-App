@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect } from "react";
+import React, { useState, useCallback, useEffect, useMemo } from "react";
 import { StyleSheet } from "react-native";
 import { Screen } from "../../components";
 import { useStores } from "../../models";
@@ -7,8 +7,6 @@ import { observer } from "mobx-react-lite";
 import SearchBar from "./components/SearchBar";
 import ListMovies from "./components/ListMovies";
 import Header from "app/components/common/Header";
-import { getSnapshot } from "mobx-state-tree";
-import { Movies } from "app/models/Movies";
 
 const styles = StyleSheet.create({
     root: {
@@ -28,17 +26,21 @@ const SearchMoviesScreen: React.FC = observer(() => {
     const [page, setPage] = useState(1);
     const [isLoadMore, setIsLoadMore] = useState(true);
 
+    const movieSearched = useMemo(() => movieStore.searched, [movieStore.searched]);
+
     useEffect(() => {
         movieStore.clearMovies('searched');
-    }, []);
+    }, [movieStore]);
 
     const handleSearch = useCallback(async () => {
         if (query.trim() === "") return;
+
         setIsLoading(true);
+        movieStore.clearMovies('searched');
         await movieStore.getSearchMovies(query);
-        setIsLoading(false);
         setPage(1);
         setIsLoadMore(true);
+        setIsLoading(false);
     }, [query, movieStore]);
 
     const onEndReached = useCallback(async () => {
@@ -53,11 +55,24 @@ const SearchMoviesScreen: React.FC = observer(() => {
         setIsLoading(false);
     }, [isLoading, isLoadMore, movieStore, page, query]);
 
+    const onRefresh = useCallback(async () => {
+        setIsLoading(true);
+        await movieStore.getSearchMovies(query);
+        setPage(1);
+        setIsLoadMore(true);
+        setIsLoading(false);
+    }, [query, movieStore]);
+
     return (
         <Screen style={styles.root} preset="fixed">
             <Header title="Search Movies" />
             <SearchBar query={query} onQueryChange={setQuery} onSearchPress={handleSearch} />
-            <ListMovies data={getSnapshot(movieStore.searched) as Movies[]} isLoading={isLoading} onEndReached={onEndReached} />
+            <ListMovies
+                data={movieSearched}
+                isLoading={isLoading}
+                onMomentumScrollEnd={onEndReached}
+                onRefresh={onRefresh}
+            />
         </Screen>
     );
 });
