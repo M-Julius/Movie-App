@@ -1,5 +1,5 @@
 import React from "react";
-import { Image, Platform, Pressable, StyleSheet, View } from "react-native";
+import { Image, Pressable, StyleSheet, View } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { TextField } from "app/components";
@@ -39,6 +39,10 @@ const HeaderMovies: React.FC = () => {
   const insets = useSafeAreaInsets();
   const navigation = useNavigation<CompositeNavigationProp<any, any>>();
 
+  const onPressSearch = () => {
+    navigation.push("SearchMoviesScreen");
+  };
+
   return (
     <View style={[styles.header, { top: insets.top, zIndex: 1 }]}>
       <Image
@@ -46,14 +50,14 @@ const HeaderMovies: React.FC = () => {
         style={styles.logo}
       />
       <Pressable
-        onPress={() => Platform.OS === 'android' && navigation.navigate("SearchMoviesScreen")}
+        onPress={onPressSearch}
         style={{ width: "70%", zIndex: 100 }}
       >
         <TextField
           placeholder="Search"
           editable={false}
           containerStyle={styles.searchBar}
-          onPress={() => Platform.OS === "ios" && navigation.navigate("SearchMoviesScreen")}
+          onPress={onPressSearch}
         />
       </Pressable>
       <Pressable
