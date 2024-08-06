@@ -54,8 +54,8 @@ const DetailMoviesScreen: React.FC<DetailMovieProps> = observer(({ route }) => {
       const result = await movieStore.getDetailMovies(movie?.id ?? 0);
 
       if (result.movie.kind === 'ok' && result.cast.kind === 'ok') {
-        setMovies(result.movie.movie);
-        setCredits(result.cast.cast);
+        setMovies(result.movie.data);
+        setCredits(result.cast.data);
         setSimilar(result.similar);
         setIsLoading(false);
       } else {

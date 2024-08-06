@@ -53,8 +53,8 @@ export type ResultListMovies = {
 
 export type GetResultGenres = { kind: "ok"; genres: Genre[] } | GeneralApiProblem
 export type GetMoviesResult = { kind: "ok"; data: ResultListMovies } | GeneralApiProblem
-export type GetMovieResult = { kind: "ok"; movie: DetailMovies } | GeneralApiProblem
-export type GetCreditsResult = { kind: "ok"; cast: Cast[] } | GeneralApiProblem
+export type GetMovieResult = { kind: "ok"; data: DetailMovies } | GeneralApiProblem
+export type GetCreditsResult = { kind: "ok"; data: Cast[] } | GeneralApiProblem
 
 
 /**

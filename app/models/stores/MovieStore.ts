@@ -1,4 +1,4 @@
-import { detach, Instance, SnapshotOut, types } from "mobx-state-tree";
+import { cast, detach, Instance, SnapshotOut, types } from "mobx-state-tree";
 import { Movies, MoviesModel } from "../Movies";
 import { withSetPropAction } from "../helpers/withSetPropAction";
 import { GenreModel } from "../Genre";
@@ -52,7 +52,7 @@ export const MovieStoreModel = types
           };
         });
 
-      self[type].push(...newMovies);
+      self[type] = cast([...self[type], ...newMovies]);
     };
 
     const clearMovies = (type: MovieType) => {
@@ -106,11 +106,15 @@ export const MovieStoreModel = types
         return handleApiResult(() => movieApi.searchMovies(query, page), 'searched', page);
       },
       getGenres: async () => {
-        const result = await movieApi.getGenres();
-        if (result.kind === "ok") {
-          self.setProp("genres", result.genres);
-        } else {
-          __DEV__ && console.log(result);
+        try {
+          const result = await movieApi.getGenres();
+          if (result.kind === "ok") {
+            self.setProp("genres", result.genres);
+          } else {
+            __DEV__ && console.log(result);
+          }
+        } catch (error) {
+          __DEV__ && console.log(error);
         }
       },
     };

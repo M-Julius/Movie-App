@@ -81,8 +81,8 @@ export class MovieApi extends Api {
         if (problem) return problem;
       }
 
-      const movie = response.data;
-      return { kind: "ok", movie };
+      const data = response.data;
+      return { kind: "ok", data };
     } catch (e) {
       return { kind: "bad-data" };
     }
@@ -97,8 +97,8 @@ export class MovieApi extends Api {
         if (problem) return problem;
       }
 
-      const cast = response.data?.cast;
-      return { kind: "ok", cast };
+      const data = response.data?.cast;
+      return { kind: "ok", data };
     } catch (e) {
       return { kind: "bad-data" };
     }
