@@ -27,7 +27,7 @@ const styles = StyleSheet.create({
     },
 });
 
-const SearchBar: React.FC<{ query: string; onQueryChange: (text: string) => void; onSearchPress: () => void; }> = ({ query, onQueryChange, onSearchPress }) => (
+const SearchBar: React.FC<{ query: string; onQueryChange: (text: string) => void; }> = ({ query, onQueryChange }) => (
     <TextField
         style={styles.searchBarContainer}
         inputWrapperStyle={styles.searchInput}
@@ -36,7 +36,7 @@ const SearchBar: React.FC<{ query: string; onQueryChange: (text: string) => void
         value={query}
         onChangeText={onQueryChange}
         RightAccessory={() => (
-            <Pressable style={styles.searchButton} onPress={onSearchPress}>
+            <Pressable style={styles.searchButton}>
                 <MaterialIcons name="search" size={24} color={colors.palette.black} />
             </Pressable>
         )}

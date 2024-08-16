@@ -7,6 +7,7 @@ import { observer } from "mobx-react-lite";
 import SearchBar from "./components/SearchBar";
 import ListMovies from "./components/ListMovies";
 import Header from "app/components/common/Header";
+import useDebounce from "app/hooks/useDebounce";
 
 const styles = StyleSheet.create({
     root: {
@@ -24,24 +25,29 @@ const SearchMoviesScreen: React.FC = observer(() => {
     const [query, setQuery] = useState("");
     const [isLoading, setIsLoading] = useState(false);
     const [page, setPage] = useState(1);
+    const debounceSearchMovies = useDebounce(query, 500);
     const [isLoadMore, setIsLoadMore] = useState(true);
 
     const movieSearched = useMemo(() => movieStore.searched, [movieStore.searched]);
 
     useEffect(() => {
+        const fetchData = async () => {
+            if (debounceSearchMovies !== '') {
+                setIsLoading(true);
+                movieStore.clearMovies('searched');
+                await movieStore.getSearchMovies(debounceSearchMovies);
+                setPage(1);
+                setIsLoadMore(true);
+                setIsLoading(false);
+            }
+        };
+
+        fetchData();
+    }, [debounceSearchMovies]);
+
+    useEffect(() => {
         movieStore.clearMovies('searched');
     }, [movieStore]);
-
-    const handleSearch = useCallback(async () => {
-        if (query.trim() === "") return;
-
-        setIsLoading(true);
-        movieStore.clearMovies('searched');
-        await movieStore.getSearchMovies(query);
-        setPage(1);
-        setIsLoadMore(true);
-        setIsLoading(false);
-    }, [query, movieStore]);
 
     const onEndReached = useCallback(async () => {
         if (!isLoadMore || isLoading || !movieStore.searched.length) return;
@@ -66,7 +72,7 @@ const SearchMoviesScreen: React.FC = observer(() => {
     return (
         <Screen style={styles.root} preset="fixed">
             <Header title="Search Movies" />
-            <SearchBar query={query} onQueryChange={setQuery} onSearchPress={handleSearch} />
+            <SearchBar query={query} onQueryChange={setQuery} />
             <ListMovies
                 data={movieSearched}
                 isLoading={isLoading}
