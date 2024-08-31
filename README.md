@@ -1,10 +1,10 @@
 # Movie App 
+[<img src="screenshot/MovieApp.png" />](screenshot/MovieApp.png)
 Movie App is a mobile application that displays a list of popular movies, top-rated movies, detailed movie information, favorite movie, including cast details, genres in list. This app uses Expo - React Native and several additional libraries for animation and data management.
 
-[<img src="screenshot/Movie App.png" />](main.png)
 
 
-### Currently includes:
+## Currently includes:
 - [Demo Android App](https://drive.google.com/file/d/1WH8XuoNEVQUAV8rCO-DRWkqAarlQPmh_/view?usp=sharing)
 - Expo CLI
 - React Native
@@ -14,7 +14,7 @@ Movie App is a mobile application that displays a list of popular movies, top-ra
 - And more!
 
 
-### Instalasi
+## Instalasi
 
 1. Clone this repository
 
@@ -45,7 +45,7 @@ npx expo start
 5. Select your devices
 
 
-### Feature App:
+## Feature App:
 - [x] Now Playing Movies
 - [x] Popular Movies
 - [x] Top Rated Movies
