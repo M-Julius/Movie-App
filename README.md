@@ -1,13 +1,7 @@
 # Movie App 
 Movie App is a mobile application that displays a list of popular movies, top-rated movies, detailed movie information, favorite movie, including cast details, genres in list. This app uses Expo - React Native and several additional libraries for animation and data management.
 
-## Preview
-[<img src="screenshot/main.png" width="250"/>](main.png)
-[<img src="screenshot/detail.png" width="250"/>](detail.png)
-[<img src="screenshot/modal_cast.png" width="250"/>](modal_cast.png)
-[<img src="screenshot/favorite.png" width="250"/>](favorite.png)
-[<img src="screenshot/more_movies.png" width="250"/>](movie_movies.png)
-[<img src="screenshot/search_movies.png" width="250"/>](search_movies.png)
+[<img src="screenshot/Movie App.png" />](main.png)
 
 
 ### Currently includes:
